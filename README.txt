@@ -3,7 +3,6 @@ Curso REACT https://fullstackopen.com/es/
 Nota: He añadido origin usando un token de GitHub y así poder subir el codigo a GitHub sin requerir autenticación en Github (usando usuario y password)
 Nota: El token de Github se obtiene desde GitHub --> Perfil --> Settings --> Developer Settings --> Personal Access Token
 git remote add origin https://[TOKEN]@github.com/rsvidal/ReactFullstackopen.git
-
 ----------
 JavaScript
 ----------
