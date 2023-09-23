@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
-import axios from 'axios' // Librería axios para hacer peticiones HTTP
-import {Note} from './Notes'
+import noteService from '../services/notes'
+import Notification from './notification'
 
 // Nota: Este componente se ha copiado del componente Notes y se ha modificado para invocar a axios para realizar peticiones HTTP 
 const NotesUsingAxios = (props) => {
@@ -9,6 +9,7 @@ const NotesUsingAxios = (props) => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
+  const [errorMessage, setErrorMessage] = useState('')
 
   // El hook useEffect se ejecuta siempre que se renderiza el componente, por lo que se debe tener cuidado con el código que se incluye en el hook useEffect, pues puede provocar un bucle infinito
   // En este caso, al cargar la pagina se invoca al servidor para obtener las notas desde el backend y llama al método setNotes para actualizar la variable de estado notes  
@@ -24,6 +25,7 @@ const NotesUsingAxios = (props) => {
   // Como siempre, una llamada a una función de actualización de una variable de estado (en este caso 'notes' desencadena la re-renderización del componente. 
   // Como resultado, render 3 notes se imprime en la consola y las notas obtenidas del servidor se renderizan en la pantalla.
 
+  /* Anulado. Se invoca al método getAll del servicio noteService para obtener las notas desde el backend
   useEffect(() => {
     console.log('effect!')
     axios
@@ -33,7 +35,18 @@ const NotesUsingAxios = (props) => {
         setNotes(response.data)
       })
   }, []) // Este segundo parametro es un array vacío, que indica que el efecto solo se ejecuta con la primera renderización del componente
-  
+  */
+
+  useEffect(() => {
+    console.log('effect!')
+    noteService
+      .getAll()
+      .then(initialNotes => { // Nota: El nombre initialNotes es un nombre cualquiera, podría ser cualquier otro nombre
+        console.log('promises fulfilled')
+        setNotes(initialNotes)
+      })
+  }, []) // Este segundo parametro es un array vacío, que indica que el efecto solo se ejecuta con la primera renderización del componente
+
   console.log('render', notes.length, 'notes')
 
   /* Otra forma de escribir la función de efecto es la siguiente: 
@@ -69,13 +82,21 @@ const NotesUsingAxios = (props) => {
       // id: notes.length + 1, // No es necesario incluir el id, pues el backend lo genera automaticamente
     }
 
+    /* Anulado. Se invoca al método create del servicio noteService para añadir la nota en el backend
     axios
       .post('http://localhost:3002/notes', noteObject)
       .then(response => {
         console.log("Response when adding a new note:", response)
-
         setNotes(notes.concat(response.data)) // Incluir la nota en la lista de notas (con su correspondiente id)
         setNewNote('') // Inicializa el textbox de la nota    
+      }) */
+
+    noteService
+      .create(noteObject)
+      .then(response => {
+        console.log("Response when adding a new note:", response)
+        setNotes(notes.concat(response.data)) // Incluir la nota en la lista de notas (con su correspondiente id)
+        setNewNote('') // Inicializa el textbox de la nota
       })
   }
 
@@ -95,16 +116,28 @@ const NotesUsingAxios = (props) => {
     // Y las variables de estado no se deben modificar directamente (siempre se debe crear una copia)
     const changedNote = { ...note, important: !note.important }
   
+    /* Anulado. Se invoca al método update del servicio noteService para actualizar la nota en el backend
     axios.put(url, changedNote).then(response => {
       // Se actualiza la lista de notas con la nota que ha sido modificada (la que no ha sido modificada se mantiene igual)
       setNotes(notes.map(note => note.id !== id ? note : response.data))
+    }) */
+    
+    noteService
+    .update(id, changedNote)
+    .then(response => {
+      // Se actualiza la lista de notas con la nota que ha sido modificada (la que no ha sido modificada se mantiene igual)
+      setNotes(notes.map(note => note.id !== id ? note : response.data))
     })
+    .catch (error => { 
+      Notification('the note ' + note.content + ' was already deleted from server') 
+      setTimeout(() => {setErrorMessage(null) }, 5000)
+    })  
   }
   
   return (
     <div>
       <h1>Notes Using Axios</h1>
-      
+      <Notification message={errorMessage} />
       {/* Botón que indica si se muestran todas las notas o solo las importantes */}
       <div>
         <button onClick={() => setShowAll(!showAll)}>show {showAll ? 'important' : 'all' }</button>
@@ -128,4 +161,17 @@ const NotesUsingAxios = (props) => {
   )
 }
 
-export default NotesUsingAxios
+const Note = ({ clave, note, toggleImportance }) => {
+  
+  const label = note.important ? 'make not important' : 'make important'
+  console.log('Showing note in the list .,.', note)
+
+  return (
+    <li key={clave}>
+      Id {note.id} - {note.content} {note.important ? '(Important)' : '(Not important)'}
+      <button onClick={toggleImportance}>{label}</button>
+    </li>
+  )  
+}
+
+export {NotesUsingAxios}

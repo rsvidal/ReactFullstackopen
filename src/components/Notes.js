@@ -57,17 +57,13 @@ const Notes = (props) => {
   )
 }
 
-const Note = ({ clave, note, toggleImportance }) => {
-  
-  const label = note.important ? 'make not important' : 'make important'
+const Note = ({ clave, note, toggleImportance }) => {  
   console.log('Showing note in the list .,.', note)
-
   return (
-    <li key={clave}>
-      {note.content} 
-      <button onClick={toggleImportance}>{label}</button>
+    <li key={clave} class="note">
+      Id {note.id} - {note.content} {note.important ? '(Important)' : '(Not important)'}      
     </li>
   )  
 }
 
-export {Notes, Note};
+export {Notes};
