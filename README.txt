@@ -55,6 +55,7 @@ En los navegadores actuales, es posible ejecutar código paralelo con la ayuda d
 -----------
 Json Server
 -----------
+Tutorial: https://www.digitalocean.com/community/tutorials/json-server
 
 Para el desarrollo se ha usado Json Server. Simula a un servidor que en lugar de apuntar a una base de datos de producción, apunta directamente a un fichero Json.
 

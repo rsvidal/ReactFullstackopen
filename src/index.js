@@ -18,7 +18,7 @@ import {NotesUsingAxios} from './components/notesUsingAxios'
 // Notas: Un componente React siempre empieza con mayúscula y debe contener un elemento raíz que englobe a todos los demás elementos (en este caso <div></div>)
 const App = () => ( 
   <div>
-  
+    {/*
     <h1>Greetings from App!</h1>
     (*) Componente App definido en el fichero src/index.js
     <hr/>    
@@ -39,7 +39,7 @@ const App = () => (
     <Notes />
     <hr/>
     <UseOfXHR />    
-    <UseOfAxios />     
+    <UseOfAxios /> */}  
     <NotesUsingAxios />    
   </div>
 )

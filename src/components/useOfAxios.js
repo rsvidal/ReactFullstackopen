@@ -1,6 +1,7 @@
 import axios from 'axios' // Librería axios para hacer peticiones HTTP
 
-const url = 'http://localhost:3002/notes'
+// const url = 'http://localhost:3002/notes' // URL de notas del servidor json-server
+const url = 'http://localhost:3003/api/notes' // URL de notas del servidor creado con node en el proyecto 'backend'
 
 // Componente que muestra como se puede hacer una petición HTTP usando XMLHttpRequest
 // Nota: Es preferible usar Axios (ver componente UseOfAxios en este mismo fichero)

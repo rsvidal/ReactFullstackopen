@@ -107,8 +107,6 @@ const NotesUsingAxios = (props) => {
   const toggleImportanceOf = id => {
 
     console.log('Changing importance into ' + id + ' note ...')
-
-    const url = `http://localhost:3002/notes/${id}`
     const note = notes.find(n => n.id === id)
 
     // Nota: El operador spread (...) se usa para crear una copia de un objeto JavaScript
@@ -133,6 +131,25 @@ const NotesUsingAxios = (props) => {
       setTimeout(() => {setErrorMessage(null) }, 5000)
     })  
   }
+
+  // Función que se ejecuta cuando el usuario pulsa el botón de eliminar una nota
+  const deleteNoteOf = id => {
+
+    console.log('Delete ' + id + ' note ...')
+    
+    noteService
+    .delete(id)
+    .then(response => {      
+      // Se actualiza la lista de notas con la nota que ha sido eliminada
+      // setNotes(notes.filter(note => note.id !== id))      
+      var result = notes.filter(note => note.id !== id)      
+      setNotes(result)      
+    })
+    .catch (error => { 
+      Notification('Error deleting the note ' + id + ' from server') 
+      setTimeout(() => {setErrorMessage(null) }, 5000)
+    })  
+  }
   
   return (
     <div>
@@ -147,21 +164,22 @@ const NotesUsingAxios = (props) => {
         {notesToShow.map((note, key) => (          
           <Note
             clave={key}
-            note={note} 
-            toggleImportance={() => toggleImportanceOf(note.id)}
+            note={note}
+            toggleImportance={() => toggleImportanceOf(note.id)}            
+            deleteNote={() => deleteNoteOf(note.id)}
           />  
         ))}
       </ul>
 
       <form onSubmit={addNote}>
-        <input value={newNote} onChange={handleNoteChanged} /> 
+        <input value={newNote} onChange={handleNoteChanged} />
         <button type="submit">save</button>
       </form>       
     </div>
   )
 }
 
-const Note = ({ clave, note, toggleImportance }) => {
+const Note = ({ clave, note, toggleImportance, deleteNote }) => {
   
   const label = note.important ? 'make not important' : 'make important'
   console.log('Showing note in the list .,.', note)
@@ -169,7 +187,10 @@ const Note = ({ clave, note, toggleImportance }) => {
   return (
     <li key={clave}>
       Id {note.id} - {note.content} {note.important ? '(Important)' : '(Not important)'}
+      &nbsp;-&nbsp;
       <button onClick={toggleImportance}>{label}</button>
+      &nbsp;-&nbsp;
+      <button onClick={deleteNote}>X</button>
     </li>
   )  
 }
