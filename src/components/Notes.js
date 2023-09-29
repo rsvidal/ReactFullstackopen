@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React,  { useState } from 'react'
 
 const Notes = (props) => {
 
@@ -28,16 +28,16 @@ const Notes = (props) => {
     }
 
     setNotes(notes.concat(noteObject)) // Incluir la nota en la lista de notas
-    setNewNote('') // Inicializa el textbox de la nota    
+    setNewNote('') // Inicializa el textbox de la nota
   }
 
   // notesToShow es la lista de notas que se va a mostrar en el navegador
   const notesToShow = showAll ? notes : notes.filter(note => note.important === true)
-  
+
   return (
     <div>
       <h1>Notes</h1>
-      
+
       {/* Botón que indica si se muestran todas las notas o solo las importantes */}
       <div>
         <button onClick={() => setShowAll(!showAll)}>show {showAll ? 'important' : 'all' }</button>
@@ -50,20 +50,20 @@ const Notes = (props) => {
       </ul>
 
       <form onSubmit={addNote}>
-        <input value={newNote} onChange={handleNoteChanged} /> 
+        <input value={newNote} onChange={handleNoteChanged} />
         <button type="submit">save</button>
-      </form>       
+      </form>
     </div>
   )
 }
 
-const Note = ({ clave, note, toggleImportance }) => {  
+const Note = ({ clave, note, toggleImportance }) => {
   console.log('Showing note in the list .,.', note)
   return (
-    <li key={clave} class="note">
-      Id {note.id} - {note.content} {note.important ? '(Important)' : '(Not important)'}      
+    <li key={ clave } class="note">
+      Id { note.id } - { note.content } { note.important ? '(Important)' : '(Not important)' }
     </li>
-  )  
+  )
 }
 
-export {Notes};
+export { Notes };

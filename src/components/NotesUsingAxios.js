@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import noteService from '../services/notes'
 import Notification from './notification'
 
-// Nota: Este componente se ha copiado del componente Notes y se ha modificado para invocar a axios para realizar peticiones HTTP 
+// Nota: Este componente se ha copiado del componente Notes y se ha modificado para invocar a axios para realizar peticiones HTTP
 const NotesUsingAxios = (props) => {
 
   // El hook useState (hook de estado) se usa para definir una variable de estado (notes) y una función para actualizarla (setNotes)
@@ -10,9 +10,11 @@ const NotesUsingAxios = (props) => {
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
+  const [username , setUsername] = useState('')
+  const [password , setPassword] = useState('')
 
   // El hook useEffect se ejecuta siempre que se renderiza el componente, por lo que se debe tener cuidado con el código que se incluye en el hook useEffect, pues puede provocar un bucle infinito
-  // En este caso, al cargar la pagina se invoca al servidor para obtener las notas desde el backend y llama al método setNotes para actualizar la variable de estado notes  
+  // En este caso, al cargar la pagina se invoca al servidor para obtener las notas desde el backend y llama al método setNotes para actualizar la variable de estado notes
   // Como la invocación al servidor se hace una única vez, no se produce un bucle infinito y además es asincrona, por lo que no bloquea la ejecución del resto del código
   //
   // En este caso, la aparición de mensajes en la consola será la siguiente:
@@ -20,9 +22,9 @@ const NotesUsingAxios = (props) => {
   // 2. effect!
   // 3. promises fulfilled
   // 4. render 3 notes
-  // 
+  //
   // ¿Porque se muestra el mensaje de render dos veces?
-  // Como siempre, una llamada a una función de actualización de una variable de estado (en este caso 'notes' desencadena la re-renderización del componente. 
+  // Como siempre, una llamada a una función de actualización de una variable de estado (en este caso 'notes' desencadena la re-renderización del componente.
   // Como resultado, render 3 notes se imprime en la consola y las notas obtenidas del servidor se renderizan en la pantalla.
 
   /* Anulado. Se invoca al método getAll del servicio noteService para obtener las notas desde el backend
@@ -49,7 +51,7 @@ const NotesUsingAxios = (props) => {
 
   console.log('render', notes.length, 'notes')
 
-  /* Otra forma de escribir la función de efecto es la siguiente: 
+  /* Otra forma de escribir la función de efecto es la siguiente:
   useEffect(() => {
     console.log('effect!')
 
@@ -61,6 +63,12 @@ const NotesUsingAxios = (props) => {
     const promise = axios.get('http://localhost:3001/notes')
     promise.then(eventHandler)
   }, []) */
+
+  // Evento que se ejecuta cada vez que el usuario escribe algo en el textbox del username y almacena su valor en la variable username
+  const handleLogin = (event) => {
+    event.preventDefault()
+    console.log('logging in with', username, password)
+  }
 
   // Evento que se ejecuta cada vez que el usuario escribe algo en el textbox de la nota y almacena su valor en la variable newNote
   const handleNoteChanged = (event) => {
@@ -88,7 +96,7 @@ const NotesUsingAxios = (props) => {
       .then(response => {
         console.log("Response when adding a new note:", response)
         setNotes(notes.concat(response.data)) // Incluir la nota en la lista de notas (con su correspondiente id)
-        setNewNote('') // Inicializa el textbox de la nota    
+        setNewNote('') // Inicializa el textbox de la nota
       }) */
 
     noteService
@@ -110,49 +118,62 @@ const NotesUsingAxios = (props) => {
     const note = notes.find(n => n.id === id)
 
     // Nota: El operador spread (...) se usa para crear una copia de un objeto JavaScript
-    // Es importante comentar que no se modifica directamente el objeto note porque pertenece a la lista notes que es una variable de estado 
+    // Es importante comentar que no se modifica directamente el objeto note porque pertenece a la lista notes que es una variable de estado
     // Y las variables de estado no se deben modificar directamente (siempre se debe crear una copia)
     const changedNote = { ...note, important: !note.important }
-  
+
     /* Anulado. Se invoca al método update del servicio noteService para actualizar la nota en el backend
     axios.put(url, changedNote).then(response => {
-      // Se actualiza la lista de notas con la nota que ha sido modificada (la que no ha sido modificada se mantiene igual)
-      setNotes(notes.map(note => note.id !== id ? note : response.data))
+    // Se actualiza la lista de notas con la nota que ha sido modificada (la que no ha sido modificada se mantiene igual)
+    setNotes(notes.map(note => note.id !== id ? note : response.data))
     }) */
-    
+
     noteService
-    .update(id, changedNote)
-    .then(response => {
-      // Se actualiza la lista de notas con la nota que ha sido modificada (la que no ha sido modificada se mantiene igual)
-      setNotes(notes.map(note => note.id !== id ? note : response.data))
-    })
-    .catch (error => { 
-      Notification('the note ' + note.content + ' was already deleted from server') 
-      setTimeout(() => {setErrorMessage(null) }, 5000)
-    })  
+      .update(id, changedNote)
+      .then(response => {
+        // Se actualiza la lista de notas con la nota que ha sido modificada (la que no ha sido modificada se mantiene igual)
+        setNotes(notes.map(note => note.id !== id ? note : response.data))
+      })
+      .catch (error => {
+        Notification('the note ' + note.content + ' was already deleted from server')
+        setTimeout(() => {setErrorMessage(null) }, 5000)
+      })
   }
 
   // Función que se ejecuta cuando el usuario pulsa el botón de eliminar una nota
   const deleteNoteOf = id => {
 
     console.log('Delete ' + id + ' note ...')
-    
+
     noteService
-    .delete(id)
-    .then(response => {      
-      // Se actualiza la lista de notas con la nota que ha sido eliminada
-      // setNotes(notes.filter(note => note.id !== id))      
-      var result = notes.filter(note => note.id !== id)      
-      setNotes(result)      
-    })
-    .catch (error => { 
-      Notification('Error deleting the note ' + id + ' from server') 
-      setTimeout(() => {setErrorMessage(null) }, 5000)
-    })  
+      .delete(id)
+      .then(response => {
+        // Se actualiza la lista de notas con la nota que ha sido eliminada
+        // setNotes(notes.filter(note => note.id !== id))
+        var result = notes.filter(note => note.id !== id)
+        setNotes(result)
+      })
+      .catch (error => {
+        Notification('Error deleting the note ' + id + ' from server')
+        setTimeout(() => {setErrorMessage(null) }, 5000)
+      })
   }
-  
+
   return (
     <div>
+      <h1>Login</h1>
+      <form onSubmit={handleLogin}>
+        <div>
+          username
+          <input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)} />
+        </div>
+        <div>
+          password
+          <input type="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)} />
+        </div>
+        <button type="submit">login</button>
+      </form>
+
       <h1>Notes Using Axios</h1>
       <Notification message={errorMessage} />
       {/* Botón que indica si se muestran todas las notas o solo las importantes */}
@@ -161,26 +182,26 @@ const NotesUsingAxios = (props) => {
       </div>
 
       <ul>
-        {notesToShow.map((note, key) => (          
+        {notesToShow.map((note, key) => (
           <Note
-            clave={key}
-            note={note}
-            toggleImportance={() => toggleImportanceOf(note.id)}            
-            deleteNote={() => deleteNoteOf(note.id)}
-          />  
+            clave={ key }
+            note={ note }
+            toggleImportance={ () => toggleImportanceOf(note.id) }
+            deleteNote={ () => deleteNoteOf(note.id) }
+          />
         ))}
       </ul>
 
       <form onSubmit={addNote}>
         <input value={newNote} onChange={handleNoteChanged} />
         <button type="submit">save</button>
-      </form>       
+      </form>
     </div>
   )
 }
 
 const Note = ({ clave, note, toggleImportance, deleteNote }) => {
-  
+
   const label = note.important ? 'make not important' : 'make important'
   console.log('Showing note in the list .,.', note)
 
@@ -192,7 +213,7 @@ const Note = ({ clave, note, toggleImportance, deleteNote }) => {
       &nbsp;-&nbsp;
       <button onClick={deleteNote}>X</button>
     </li>
-  )  
+  )
 }
 
-export {NotesUsingAxios}
+export { NotesUsingAxios }

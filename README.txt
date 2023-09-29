@@ -3,6 +3,11 @@ Curso REACT https://fullstackopen.com/es/
 Nota: He añadido origin usando un token de GitHub y así poder subir el codigo a GitHub sin requerir autenticación en Github (usando usuario y password)
 Nota: El token de Github se obtiene desde GitHub --> Perfil --> Settings --> Developer Settings --> Personal Access Token
 git remote add origin https://[TOKEN]@github.com/rsvidal/ReactFullstackopen.git
+
+npm install --save-dev json-server --> Instalar json-server para testing
+npm install axios --> Instalar axios
+npm install --save-dev eslint --> Instalar eslint para analisis estático de código fuente
+
 ----------
 JavaScript
 ----------
@@ -45,7 +50,6 @@ Depurar:
 ---------------------
 Javascript y procesos
 ---------------------
-
 Actualmente, ¡¡¡ los motores de JavaScript son de un solo subproceso !!! 
 Esto significa que no puede ejecutar código en paralelo. Como resultado, es un requisito utilizar un modelo sin bloqueo para ejecutar operaciones IO. 
 De lo contrario, el navegador se "congelaría" durante, por ejemplo, la obtención de datos de un servidor.
@@ -67,7 +71,7 @@ donde db.json es un archivo que contiene un array de notas. Se puede acceder al 
 2) Arrancar el servidor Json Server configurandolo en la propia aplicación:
 
 * Nos situamos en el directorio raiz de la aplicación y ejecutamos la siguiente sentencia (para añadir la depedencia json-server a nuestro proyecto, y se añade automaticamente al fichero package.json):)
-  npm install json-server --save-dev
+  npm install --save-dev json-server 
 
 * Crear un script llamado "server" en el fichero package.json:
   "scripts": { 
@@ -81,11 +85,9 @@ donde db.json es un archivo que contiene un array de notas. Se puede acceder al 
 -----
 Axios
 -----
-
 Para la invocación desde el frontend (React) al Backend se usa Axios.
 Axios realmente es una libreria que funcione como Fetch, pero mas agradable de usar.
 Para ello, hemos instalado Axios (situandonos en el directorio raiz de la aplicación, añade el paquete Axios automaticamente al fichero package.json):
-
 npm install axios
 
 --------
